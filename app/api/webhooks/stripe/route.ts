@@ -23,7 +23,10 @@ export async function POST(req: Request) {
   const headersList = await headers();
   const signature = headersList.get("stripe-signature");
 
+  console.log("[Stripe Webhook] Received incoming webhook request");
+
   if (!signature) {
+    console.error("[Stripe Webhook] Error: Missing stripe-signature header");
     return NextResponse.json(
       { error: "Missing stripe-signature header" },
       { status: 400 }
@@ -34,9 +37,10 @@ export async function POST(req: Request) {
 
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    console.log(`[Stripe Webhook] Signature verified! Event type: ${event.type}`);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Webhook signature verification failed:", message);
+    console.error("[Stripe Webhook] Signature verification failed:", message);
     return NextResponse.json(
       { error: `Webhook Error: ${message}` },
       { status: 400 }
@@ -47,11 +51,12 @@ export async function POST(req: Request) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
+      console.log(`[Stripe Webhook] Processing checkout session: ${session.id}`);
       await handleCheckoutCompleted(session);
       break;
     }
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      console.log(`[Stripe Webhook] Unhandled event type: ${event.type}`);
   }
 
   return NextResponse.json({ received: true });
