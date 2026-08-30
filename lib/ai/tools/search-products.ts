@@ -24,14 +24,12 @@ const productSearchSchema = z.object({
       "Filter by category slug (e.g., 'sofas', 'tables', 'chairs', 'storage')"
     ),
   material: z
-    .enum(["", ...MATERIAL_VALUES])
+    .enum(MATERIAL_VALUES)
     .optional()
-    .default("")
     .describe("Filter by material type"),
   color: z
-    .enum(["", ...COLOR_VALUES])
+    .enum(COLOR_VALUES)
     .optional()
-    .default("")
     .describe("Filter by color"),
   minPrice: z
     .number()
