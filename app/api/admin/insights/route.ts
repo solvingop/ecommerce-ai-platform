@@ -1,4 +1,5 @@
-import { generateText, gateway } from "ai";
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
 import { client } from "@/sanity/lib/client";
 import {
   ORDERS_LAST_7_DAYS_QUERY,
@@ -211,7 +212,7 @@ export async function GET() {
 
     // Generate AI insights
     const { text } = await generateText({
-      model: gateway("anthropic/claude-sonnet-4"),
+      model: google("gemini-2.0-flash"),
       system: `You are an expert e-commerce analytics assistant. Analyze the provided store data and generate actionable insights for the store admin.
 
 Your response must be valid JSON with this exact structure:

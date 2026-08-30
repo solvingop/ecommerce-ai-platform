@@ -1,4 +1,4 @@
-import { gateway, type Tool, ToolLoopAgent } from "ai";
+import { type Tool, ToolLoopAgent } from "ai";
 import { google } from "@ai-sdk/google";
 import { searchProductsTool } from "./tools/search-products";
 import { createGetMyOrdersTool } from "./tools/get-my-orders";
