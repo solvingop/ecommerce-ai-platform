@@ -27,11 +27,19 @@ export async function getOrCreateStripeCustomer(
   });
 
   if (existingCustomer?.stripeCustomerId) {
-    // Customer exists, return existing IDs
-    return {
-      stripeCustomerId: existingCustomer.stripeCustomerId,
-      sanityCustomerId: existingCustomer._id,
-    };
+    try {
+      const stripeCustomer = await stripe.customers.retrieve(
+        existingCustomer.stripeCustomerId
+      );
+      if (!stripeCustomer.deleted) {
+        return {
+          stripeCustomerId: existingCustomer.stripeCustomerId,
+          sanityCustomerId: existingCustomer._id,
+        };
+      }
+    } catch {
+      // Customer does not exist in current Stripe account, proceed to find/create
+    }
   }
 
   // Check if customer exists in Stripe by email
