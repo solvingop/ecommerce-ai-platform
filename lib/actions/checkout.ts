@@ -127,11 +127,12 @@ export async function createCheckoutSession(
     };
 
     // 8. Create Stripe Checkout Session
-    // Priority: NEXT_PUBLIC_BASE_URL > Vercel URL > localhost
+    // Priority: NEXT_PUBLIC_BASE_URL > Production Domain > localhost
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-      "http://localhost:3000";
+      (process.env.NODE_ENV === "production"
+        ? "https://ecommerce-ai-platform-tau.vercel.app"
+        : "http://localhost:3000");
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
